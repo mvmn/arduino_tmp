@@ -172,16 +172,18 @@ void play() {
   if (buttonState == 0) {
     if (buttonState != lastButtonState) {
       vspeed = 16;
+    } else {
+      vspeed++;
     }
-    vspeed++;
     if (vspeed > 30) {
       vspeed = 30;
     }
   } else {
     if (buttonState != lastButtonState) {
       vspeed = 16;
+    } else {
+      vspeed--;
     }
-    vspeed--;
     if (vspeed < 10) {
       vspeed = 10;
     }
