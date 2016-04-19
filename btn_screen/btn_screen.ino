@@ -189,8 +189,8 @@ void play() {
     }
   }
 
-  height += 16;
-  height -= vspeed;
+  height += 8;
+  height -= vspeed/2;
   if (height > 16) {
     height = 16;
   }
