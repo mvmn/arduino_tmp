@@ -102,7 +102,7 @@ void setup()
   }
 }
 
-int playDelay = 200;
+int playDelay = 150;
 
 int score = 0;
 int scr_len = 12;
@@ -123,6 +123,7 @@ void loop()
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Game over");
+    drawScore();
     int buttonState = digitalRead(pushButton);
     if (buttonState == 1 && lastButtonState != buttonState) {
       gameOver = false;
@@ -141,7 +142,7 @@ void gameInit() {
   scr_pos = 0;
   height = 12;
   vspeed = 16;
-  for (int i = 0; i < 7; i++) {
+  for (int i = 0; i < 8; i++) {
     blocks[i] = -1;
   }
   //  genBlock(0);
@@ -150,17 +151,20 @@ void gameInit() {
   //  genBlock(3);
 }
 
+int moveMul = 3;
 void play() {
   int buttonState = digitalRead(pushButton);
   //unsigned long now = millis();
 
   scr_pos++;
-  scr_pos = scr_pos % block_offset;
-  //  Serial.write("scr_pos: ");
-  //  Serial.println(scr_pos);
+  scr_pos = scr_pos % (block_offset * moveMul);
+  // Serial.write("scr_pos: ");
+  // Serial.println(scr_pos);
 
-  lcd.clear();
-  drawBlocks();
+  //lcd.clear();
+  if (scr_pos % moveMul == 0) {
+    drawBlocks();
+  }
   drawBird();
 
   checkCollision();
@@ -210,23 +214,24 @@ void play() {
 }
 
 void checkCollision() {
-  if (scr_pos == 0 && blocks[0] > -1) {
+  if (scr_pos >= (block_offset - 1) * moveMul && scr_pos < block_offset * moveMul && blocks[0] > -1) {
+    // Serial.println("Checking collision.");
     bool collided = false;
     if (height > 8) {
       int block = blocks[0];
-      //      Serial.println("Collision check");
-      //      Serial.println(height);
-      //      Serial.println(block);
-      //      Serial.println(8 - (block + 1) * 2);
+      // Serial.println("Collision check");
+      // Serial.println(height);
+      // Serial.println(block);
+      // Serial.println(8 - (block + 1) * 2);
       if (block > 2 || (height - 8) > (8 - (block + 1) * 2)) {
         collided = true;
       }
     } else {
       int block = blocks[1];
-      //      Serial.println("Collision check");
-      //      Serial.println(height);
-      //      Serial.println(block);
-      //      Serial.println(8 - (block - 3) * 2);
+      // Serial.println("Collision check");
+      // Serial.println(height);
+      // Serial.println(block);
+      // Serial.println(8 - (block - 3) * 2);
       if (block < 4 || height < (8 - ((block - 3) * 2))) {
         collided = true;
       }
@@ -239,7 +244,9 @@ void checkCollision() {
       delay(1000);
       gameOver = true;
     } else {
-      score++;
+      if ((scr_pos + 1) % moveMul == 0) {
+        score++;
+      }
     }
   }
 }
@@ -252,12 +259,48 @@ void drawBlocks() {
     }
     genBlock(3);
   }
-  for (int i = 0; i < 4; i++) {
-    if (blocks[i * 2] > -1) {
-      lcd.setCursor((block_offset * i) - scr_pos, 0);
-      lcd.write(blocks[i * 2]);
-      lcd.setCursor((block_offset * i) - scr_pos, 1);
-      lcd.write(blocks[i * 2 + 1]);
+  lcd.setCursor(1, 0);
+  int blockIndexInit = 0;
+  if ((1 + (scr_pos - scr_pos % moveMul) / moveMul) % block_offset == 0) {
+    blockIndexInit = 1;
+  }
+  int blockIndex = blockIndexInit;
+  //
+  for (int i = 1; i < scr_len; i++) {
+    int block = -1;
+    // Serial.println(i + (scr_pos - scr_pos % 3) / 3);
+    if ((i + 1 + (scr_pos - scr_pos % moveMul) / moveMul) % block_offset == 0) {
+      // Serial.print("Block check: ");
+      // Serial.println(blockIndex * 2);
+      block = blocks[blockIndex * 2];
+      blockIndex++;
+    }
+    if (block > -1) {
+      // Serial.print("Block: ");
+      // Serial.println(block);
+      lcd.write(block);
+    } else {
+      lcd.write(' ');
+    }
+  }
+  lcd.setCursor(1, 1);
+  blockIndex = blockIndexInit;
+  for (int i = 1; i < scr_len; i++) {
+    // Serial.print("Iterating bottom: ");
+    // Serial.println(i);
+    int block = -1;
+    if ((i + 1 + (scr_pos - scr_pos % moveMul) / moveMul) % block_offset == 0) {
+      // Serial.print("Block check: ");
+      // Serial.println(blockIndex*2+1);
+      block = blocks[blockIndex * 2 + 1];
+      blockIndex++;
+    }
+    if (block > -1) {
+      // Serial.print("Block: ");
+      // Serial.println(block);
+      lcd.write(block);
+    } else {
+      lcd.write(' ');
     }
   }
 }
@@ -289,7 +332,7 @@ void drawScore() {
 void drawBird() {
   int chardefBird = 7;
   int chardefSpace = -1;
-  if (scr_pos == 0 && blocks[0] > -1) {
+  if (scr_pos >= (block_offset - 1) * moveMul && scr_pos < block_offset * moveMul && blocks[0] > -1) {
     if (height > 8) {
       chardefBird = blocks[0];
       chardefSpace = blocks[1];
