@@ -178,7 +178,7 @@ void updateDisplay() {
     pma = tm.Minute;*/
   drawArrow(0, 11, 8, 11, 8, 60, tm.Minute);
   drawArrow(0, 12, 8, 11, 8, 60, tm.Minute);
-  drawArrow(0, 11, 10, 11, 8, 60, tm.Minute);
+  drawArrow(0, 11, 9, 11, 8, 60, tm.Minute);
   drawArrow(0, 12, 9, 11, 8, 60, tm.Minute);
   /*if (psa > -1 && psa != tm.Second) {
     drawArrow(2, 11, 8, 12, 9, 60, psa);
