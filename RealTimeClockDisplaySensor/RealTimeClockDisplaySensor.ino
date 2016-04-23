@@ -163,10 +163,10 @@ void updateDisplay() {
     drawArrow(2, 12, 9, 9, 6, 60, pha);
     }
     pha = tm.Hour;*/
-  drawArrow(0, 11, 8, 9, 6, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
-  drawArrow(0, 10, 8, 9, 6, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
-  drawArrow(0, 11, 9, 9, 6, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
-  drawArrow(0, 10, 9, 9, 6, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
+  drawArrow(0, 11, 8, 8, 5, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
+  drawArrow(0, 10, 8, 8, 5, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
+  drawArrow(0, 11, 9, 8, 5, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
+  drawArrow(0, 10, 9, 8, 5, 12 * 60, (tm.Hour % 12) * 60 + tm.Minute);
 
   /*
     if (pma > -1 && pma != tm.Minute) {
